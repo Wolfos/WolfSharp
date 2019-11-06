@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using System.Text;
@@ -119,6 +120,8 @@ namespace WolfSharp.Core
 
 			window = VeldridStartup.CreateWindow(windowCi);
 			graphicsDevice = VeldridStartup.CreateGraphicsDevice(window);
+			
+			Console.WriteLine($"Initialized graphics with {graphicsDevice.BackendType.ToString()} backend");
 		}
 
 		private void Draw()
