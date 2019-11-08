@@ -25,7 +25,7 @@ namespace Test
         }
         static void Main(string[] args)
         {
-            var engine = new Engine(800, 600, "WolfEngine Test program");
+            var engine = new Engine(1280, 720, "WolfEngine Test program");
             var scene = new Scene();
             engine.scene = scene;
 
