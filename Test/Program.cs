@@ -28,11 +28,10 @@ namespace Test
             var engine = new Engine(800, 600, "WolfEngine Test program");
             var scene = new Scene();
             engine.scene = scene;
-            engine.maxFPS = 1;
-            
-            var gameObject = new GameObject();
-            gameObject.AddComponent<TestComponent>();
-            scene.AddGameObject(gameObject);
+
+//            var gameObject = new GameObject();
+//            gameObject.AddComponent<TestComponent>();
+//            scene.AddGameObject(gameObject);
             
             engine.MainLoop();
         }
