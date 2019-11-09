@@ -9,11 +9,11 @@ namespace WolfSharp.Rendering
 		public readonly TextureView textureView;
 		private ImageSharpTexture textureData;
 		
-		public Texture2D(string path, GraphicsDevice graphicsDevice, ResourceFactory factory)
+		public Texture2D(string path)
 		{
 			 textureData = new ImageSharpTexture(path);
-			 deviceTexture = textureData.CreateDeviceTexture(graphicsDevice, factory);
-			 textureView = graphicsDevice.ResourceFactory.CreateTextureView(deviceTexture);
+			 deviceTexture = textureData.CreateDeviceTexture(Renderer.GraphicsDevice, Renderer.ResourceFactory);
+			 textureView = Renderer.ResourceFactory.CreateTextureView(deviceTexture);
 		}
 	}
 }
