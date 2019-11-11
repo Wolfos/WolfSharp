@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using WolfSharp.Components;
 using WolfSharp.Core;
 using WolfSharp.Rendering;
@@ -13,7 +12,6 @@ namespace Test
 
             public override void Update()
             {
-                //Transform.Translate(Vector3.UnitX * Engine.DeltaTime * 0.5f);
             }
             
         }
@@ -28,14 +26,14 @@ namespace Test
             var mesh = new Mesh();
             mesh.CreateQuad();
             
-            //Camera.Instance.GameObject.AddComponent<TestComponent>();
+            Camera.Instance.GameObject.AddComponent<TestComponent>();
 
             var gameObject = new GameObject();
             var meshRenderer = gameObject.AddComponent<MeshRenderer>();
             meshRenderer.Mesh = mesh;
             meshRenderer.Shader = shader;
             meshRenderer.Texture = texture;
-            gameObject.AddComponent<TestComponent>();
+            //gameObject.AddComponent<TestComponent>();
             
             scene.AddGameObject(gameObject);
             

@@ -42,7 +42,7 @@ namespace WolfSharp.Components
 			get
 			{
 				// TODO: Cache these, they only need to be updated if they change
-				var translate = Matrix4x4.CreateTranslation(LocalPosition);
+				var translate = Matrix4x4.CreateTranslation(LocalPosition * -Vector3.UnitZ);
 				var rotate = Matrix4x4.CreateFromQuaternion(LocalRotation);
 				var scale = Matrix4x4.CreateScale(LocalScale);
 

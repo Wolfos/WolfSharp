@@ -62,16 +62,17 @@ namespace WolfSharp.Components
 
 		public override void Update()
 		{
-			Matrix4x4.Invert(Transform.Matrix, out var inverseMatrix);
-			var forward = Vector3.TransformNormal(Vector3.UnitZ, inverseMatrix);
-			var up = Vector3.TransformNormal(Vector3.UnitY, inverseMatrix);
+			Matrix4x4.Invert(Transform.Matrix, out var matrix);
+			var forward = Vector3.TransformNormal(-Vector3.UnitZ + Transform.LocalPosition, matrix);
+			var up = Vector3.TransformNormal(Vector3.UnitY, matrix);
 			View = Matrix4x4.CreateLookAt(Transform.Position, forward, up);
 		}
 
 		private void UpdateProjection()
 		{
 			Projection = Matrix4x4.CreatePerspectiveFieldOfView(
-				(float)Math.PI * FieldOfView / 180.0f,
+				//(float)Math.PI * FieldOfView / 180.0f,
+				1.0f,
 				AspectRatio,
 				ClipMin,
 				ClipMax);
