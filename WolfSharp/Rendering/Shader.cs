@@ -48,7 +48,7 @@ namespace WolfSharp.Rendering
 				BlendState = BlendStateDescription.SingleOverrideBlend,
 				DepthStencilState = DepthStencilStateDescription.DepthOnlyLessEqual,
 				RasterizerState = new RasterizerStateDescription(
-					cullMode: FaceCullMode.None,
+					cullMode: FaceCullMode.Back,
 					fillMode: PolygonFillMode.Solid,
 					frontFace: FrontFace.Clockwise,
 					depthClipEnabled: true,
