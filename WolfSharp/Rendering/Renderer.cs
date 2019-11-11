@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
 using Veldrid.Utilities;
+using WolfSharp.Core;
 
 namespace WolfSharp.Rendering
 {
@@ -13,11 +13,8 @@ namespace WolfSharp.Rendering
 		public static GraphicsDevice GraphicsDevice { get; private set; }
 		public static DisposeCollectorResourceFactory ResourceFactory { get; private set; }
 
-		private static CommandList commandList;
-		
-		// TODO: Make this thread-safe maybe?
-		private static List<RenderObject> renderObjects;
-		
+		private static CommandList _commandList;
+
 		public static void Initialize(Sdl2Window window)
 		{
 			// ReSharper disable once UseObjectOrCollectionInitializer
@@ -33,45 +30,22 @@ namespace WolfSharp.Rendering
 #endif
 			GraphicsDevice = VeldridStartup.CreateGraphicsDevice(window, options);
 			ResourceFactory = new DisposeCollectorResourceFactory(GraphicsDevice.ResourceFactory);
-			commandList = ResourceFactory.CreateCommandList();
-			renderObjects = new List<RenderObject>();
-			
-			Console.WriteLine($"Initialized Veldrid with {GraphicsDevice.BackendType} backend");
-		}
+			_commandList = ResourceFactory.CreateCommandList();
 
-		public static void AddRenderObject(RenderObject renderObject)
-		{
-			lock (renderObjects)
-			{
-				renderObjects.Add(renderObject);
-			}
-		}
-		
-		public static void RemoveRenderObject(RenderObject renderObject)
-		{
-			lock (renderObjects)
-			{
-				renderObjects.Remove(renderObject);
-			}
+			Console.WriteLine($"Initialized Veldrid with {GraphicsDevice.BackendType} backend");
 		}
 
 		public static void Draw()
 		{
-			commandList.Begin();
-			commandList.SetFramebuffer(GraphicsDevice.SwapchainFramebuffer);
-			commandList.ClearColorTarget(0, RgbaFloat.CornflowerBlue);
-			commandList.ClearDepthStencil(1);
+			_commandList.Begin();
+			_commandList.SetFramebuffer(GraphicsDevice.SwapchainFramebuffer);
+			_commandList.ClearColorTarget(0, RgbaFloat.CornflowerBlue);
+			_commandList.ClearDepthStencil(1);
 
-			lock (renderObjects)
-			{
-				foreach (var renderObject in renderObjects)
-				{
-					renderObject.Draw(commandList);
-				}
-			}
+			Scene.ActiveScene.Draw(_commandList);
 			
-			commandList.End();
-			GraphicsDevice.SubmitCommands(commandList);
+			_commandList.End();
+			GraphicsDevice.SubmitCommands(_commandList);
 			GraphicsDevice.SwapBuffers();
 			GraphicsDevice.WaitForIdle();
 		}

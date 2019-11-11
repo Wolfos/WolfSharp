@@ -8,9 +8,9 @@ namespace WolfSharp.Rendering
 {
 	public class Shader
 	{
-		public readonly Pipeline pipeline;
-		public readonly ResourceLayout matrixLayout;
-		public readonly ResourceLayout textureLayout;
+		public readonly Pipeline Pipeline;
+		public readonly ResourceLayout MatrixLayout;
+		public readonly ResourceLayout TextureLayout;
 
 		public Shader(string path)
 		{
@@ -18,6 +18,7 @@ namespace WolfSharp.Rendering
 			var fragmentCode = File.ReadAllText($"{path}.frag");
 
 			// TODO: Make generic, together with RenderObject
+			// Probably requires waiting for Veldrid.SPIRV update
 			var shaderSet = new ShaderSetDescription(
 				new[]
 				{
@@ -38,9 +39,9 @@ namespace WolfSharp.Rendering
 				new ResourceLayoutElementDescription("SurfaceSampler", ResourceKind.Sampler,
 					ShaderStages.Fragment));
 
-			matrixLayout = Renderer.ResourceFactory.CreateResourceLayout(matrixDescription);
+			MatrixLayout = Renderer.ResourceFactory.CreateResourceLayout(matrixDescription);
 
-			textureLayout = Renderer.ResourceFactory.CreateResourceLayout(textureDescription);
+			TextureLayout = Renderer.ResourceFactory.CreateResourceLayout(textureDescription);
 
 			var pipelineDescription = new GraphicsPipelineDescription
 			{
@@ -53,12 +54,12 @@ namespace WolfSharp.Rendering
 					depthClipEnabled: true,
 					scissorTestEnabled: false),
 				PrimitiveTopology = PrimitiveTopology.TriangleList,
-				ResourceLayouts = new[] {matrixLayout, textureLayout},
+				ResourceLayouts = new[] {MatrixLayout, TextureLayout},
 				ShaderSet = shaderSet,
 				Outputs = Renderer.GraphicsDevice.SwapchainFramebuffer.OutputDescription
 			};
 			
-			pipeline = Renderer.ResourceFactory.CreateGraphicsPipeline(pipelineDescription);
+			Pipeline = Renderer.ResourceFactory.CreateGraphicsPipeline(pipelineDescription);
 		}
 	}
 }

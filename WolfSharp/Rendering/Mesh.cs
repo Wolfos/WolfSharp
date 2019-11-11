@@ -4,6 +4,7 @@ using Veldrid;
 
 namespace WolfSharp.Rendering
 {
+	// TODO: UVs should be separate from Vertices
 	public struct Vertex
 	{
 		public const uint SizeInBytes = 20;
@@ -19,39 +20,39 @@ namespace WolfSharp.Rendering
 	
 	public class Mesh
 	{
-		public List<Vertex> vertices;
-		public List<ushort> indices;
+		public List<Vertex> Vertices;
+		public List<ushort> Indices;
 
-		public DeviceBuffer vertexBuffer;
-		public DeviceBuffer indexBuffer;
+		public DeviceBuffer VertexBuffer;
+		public DeviceBuffer IndexBuffer;
 
 		public Mesh()
 		{
-			vertices = new List<Vertex>();
-			indices = new List<ushort>();
+			Vertices = new List<Vertex>();
+			Indices = new List<ushort>();
 		}
 
 		public void UpdateBuffers()
 		{
-			vertexBuffer =
-				Renderer.ResourceFactory.CreateBuffer(new BufferDescription((uint) vertices.Count * Vertex.SizeInBytes,
+			VertexBuffer =
+				Renderer.ResourceFactory.CreateBuffer(new BufferDescription((uint) Vertices.Count * Vertex.SizeInBytes,
 					BufferUsage.VertexBuffer));
-			indexBuffer =
-				Renderer.ResourceFactory.CreateBuffer(new BufferDescription((uint) indices.Count * sizeof(ushort),
+			IndexBuffer =
+				Renderer.ResourceFactory.CreateBuffer(new BufferDescription((uint) Indices.Count * sizeof(ushort),
 					BufferUsage.IndexBuffer));
 			
-			Renderer.GraphicsDevice.UpdateBuffer(vertexBuffer, 0, vertices.ToArray());
-			Renderer.GraphicsDevice.UpdateBuffer(indexBuffer, 0, indices.ToArray());
+			Renderer.GraphicsDevice.UpdateBuffer(VertexBuffer, 0, Vertices.ToArray());
+			Renderer.GraphicsDevice.UpdateBuffer(IndexBuffer, 0, Indices.ToArray());
 		}
 		
 		public void CreateQuad()
 		{
-			vertices.Add(new Vertex(new Vector3(-1, 1, 0), new Vector2(0, 0)));
-			vertices.Add(new Vertex(new Vector3(1, 1, 0), new Vector2(1, 0)));
-			vertices.Add(new Vertex(new Vector3(-1, -1, 0), new Vector2(0, 1)));
-			vertices.Add(new Vertex(new Vector3(1, -1, 0), new Vector2(1, 1)));
+			Vertices.Add(new Vertex(new Vector3(-1, 1, 0), new Vector2(0, 0)));
+			Vertices.Add(new Vertex(new Vector3(1, 1, 0), new Vector2(1, 0)));
+			Vertices.Add(new Vertex(new Vector3(-1, -1, 0), new Vector2(0, 1)));
+			Vertices.Add(new Vertex(new Vector3(1, -1, 0), new Vector2(1, 1)));
 			
-			indices.AddRange(new ushort[]{0, 1, 2, 3, 2, 1});
+			Indices.AddRange(new ushort[]{0, 1, 2, 3, 2, 1});
 			UpdateBuffers();
 		}
 	}

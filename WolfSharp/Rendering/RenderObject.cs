@@ -6,51 +6,55 @@ namespace WolfSharp.Rendering
 {
 	public class RenderObject
 	{
-		public readonly Shader shader;
-		public readonly Texture2D texture;
-		public readonly Sampler textureSampler;
-		public readonly Mesh mesh;
+		public Shader Shader;
+		public Texture2D Texture;
+		public Mesh Mesh;
 
-		public Matrix4x4 mvp;
+		// ReSharper disable once InconsistentNaming
+		public Matrix4x4 MVP;
 		
-		private readonly DeviceBuffer mvpBuffer;
-		
-		public readonly List<ResourceSet> resources;
+		private DeviceBuffer _mvpBuffer;
+		private List<ResourceSet> _resources;
 		
 
-		public RenderObject(Shader shader, Texture2D texture, Mesh mesh, Sampler textureSampler)
+		public RenderObject()
 		{
-			this.shader = shader;
-			this.texture = texture;
-			this.mesh = mesh;
-			this.textureSampler = textureSampler;
+			_mvpBuffer = Renderer.ResourceFactory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
+			_resources = new List<ResourceSet>();
+		}
 
-			mvpBuffer = Renderer.ResourceFactory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
-			resources = new List<ResourceSet>();
+		public void UpdateResources()
+		{
+			if (Shader == null || Texture == null) return;
+			
+			foreach (var resource in _resources)
+			{
+				resource.Dispose();
+			}
 			
 			// TODO: Make generic, together with Shader
-			resources.Add(Renderer.ResourceFactory.CreateResourceSet(new ResourceSetDescription(
-				shader.matrixLayout,
-				mvpBuffer)));
+			_resources.Add(Renderer.ResourceFactory.CreateResourceSet(new ResourceSetDescription(
+				Shader.MatrixLayout,
+				_mvpBuffer)));
 
-			resources.Add(Renderer.ResourceFactory.CreateResourceSet(new ResourceSetDescription(
-				shader.textureLayout,
-				texture.textureView,
-				textureSampler)));
+			_resources.Add(Renderer.ResourceFactory.CreateResourceSet(new ResourceSetDescription(
+				Shader.TextureLayout,
+				Texture.TextureView,
+				Texture.Sampler)));
 		}
 
 		public void Draw(CommandList commandList)
 		{
-			commandList.UpdateBuffer(mvpBuffer, 0, ref mvp);
-			commandList.SetVertexBuffer(0, mesh.vertexBuffer);
-			commandList.SetIndexBuffer(mesh.indexBuffer, IndexFormat.UInt16);
-			commandList.SetPipeline(shader.pipeline);
-			for (uint i = 0; i < resources.Count; i++)
+			commandList.UpdateBuffer(_mvpBuffer, 0, ref MVP);
+			commandList.SetVertexBuffer(0, Mesh.VertexBuffer);
+			commandList.SetIndexBuffer(Mesh.IndexBuffer, IndexFormat.UInt16);
+			commandList.SetPipeline(Shader.Pipeline);
+			for (uint i = 0; i < _resources.Count; i++)
 			{
-				commandList.SetGraphicsResourceSet(i, resources[(int)i]);
+				commandList.SetGraphicsResourceSet(i, _resources[(int)i]);
 			}
 			
-			commandList.DrawIndexed((uint)mesh.indices.Count, 1, 0, 0, 0);
+			commandList.DrawIndexed((uint)Mesh.Indices.Count, 1, 0, 0, 0);
 		}
 	}
 }

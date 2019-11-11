@@ -1,11 +1,8 @@
-using System;
 using System.Diagnostics;
 using System.Numerics;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
-using Veldrid.Utilities;
-using WolfSharp.ECS;
 using WolfSharp.Rendering;
 using Shader = WolfSharp.Rendering.Shader;
 
@@ -13,53 +10,53 @@ namespace WolfSharp.Core
 {
 	public class Engine
 	{
-		public int maxFPS = 60;
-		public int windowWidth { get; private set; }
-		public int windowHeight { get; private set; }
-		public readonly string windowTitle;
+		public int MaxFps = 60;
+		public static int WindowWidth;
+		public static int WindowHeight;
+		public static float DeltaTime;
+		public readonly string WindowTitle;
 
-		public Scene scene;
+		public static Scene Scene;
 		
-		private Sdl2Window window;
+		private Sdl2Window _window;
 
-		private RenderObject renderObject;
+		private RenderObject _renderObject;
 
-		private long currentFrameTime;
-		private long previousFrameTime;
-		private bool quit;
+		private long _currentFrameTime;
+		private long _previousFrameTime;
+		private bool _quit;
 
 		public Engine(int windowWidth, int windowHeight, string windowTitle = "WolfEngine")
 		{
-			this.windowWidth = windowWidth;
-			this.windowHeight = windowHeight;
-			this.windowTitle = windowTitle;
+			WindowWidth = windowWidth;
+			WindowHeight = windowHeight;
+			WindowTitle = windowTitle;
 
 			InitGraphics();
-			CreateResources(); // TODO: Extract
 		}
 
 		public void MainLoop()
 		{
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
-			while (!quit)
+			while (!_quit)
 			{
-				currentFrameTime = stopwatch.ElapsedTicks;
-				float deltaTime = (currentFrameTime - previousFrameTime) / Stopwatch.Frequency;
+				_currentFrameTime = stopwatch.ElapsedTicks;
+				DeltaTime = (float)(_currentFrameTime - _previousFrameTime) / Stopwatch.Frequency;
 
-				window.PumpEvents();
+				_window.PumpEvents();
 				//TODO: Update input
 				//TODO: Handle resize events
 				//TODO: Handle quit events
 
-				scene?.Update();
-				Draw(deltaTime); // TODO: Draw scene
-				scene?.LateUpdate();
+				Scene?.Update();
+				Renderer.Draw();
+				Scene?.LateUpdate();
 
-				previousFrameTime = currentFrameTime;
+				_previousFrameTime = _currentFrameTime;
 
 				// Framerate limiter
-				while (maxFPS != -1 && stopwatch.ElapsedTicks - currentFrameTime < Stopwatch.Frequency / maxFPS)
+				while (MaxFps != -1 && stopwatch.ElapsedTicks - _currentFrameTime < Stopwatch.Frequency / MaxFps)
 				{
 				}
 			}
@@ -73,21 +70,21 @@ namespace WolfSharp.Core
 			{
 				X = 100,
 				Y = 100,
-				WindowWidth = windowWidth,
-				WindowHeight = windowHeight,
-				WindowTitle = windowTitle
+				WindowWidth = WindowWidth,
+				WindowHeight = WindowHeight,
+				WindowTitle = WindowTitle
 			};
 
-			window = VeldridStartup.CreateWindow(ref windowCi);
+			_window = VeldridStartup.CreateWindow(ref windowCi);
 			
-			Renderer.Initialize(window);
+			Renderer.Initialize(_window);
 		}
 
-		private void Draw(float deltaTime)
+		private void Draw()
 		{
 			var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(
 				1.0f,
-				(float) window.Width / window.Height,
+				(float) _window.Width / _window.Height,
 				0.5f,
 				100f);
 
@@ -95,20 +92,9 @@ namespace WolfSharp.Core
 
 			var modelMatrix = Matrix4x4.Identity;
 
-			renderObject.mvp = modelMatrix * viewMatrix * projectionMatrix;
+			_renderObject.MVP = modelMatrix * viewMatrix * projectionMatrix;
 			
 			Renderer.Draw();
-		}
-
-		private void CreateResources()
-		{
-			var shader = new Shader("WolfSharp/Assets/Shaders/Sprite");
-			var texture = new Texture2D("WolfSharp/Assets/Sprites/Test.png");
-			var mesh = new Mesh();
-			mesh.CreateQuad();
-			
-			renderObject = new RenderObject(shader, texture, mesh, Renderer.GraphicsDevice.Aniso4xSampler);
-			Renderer.AddRenderObject(renderObject);
 		}
 	}
 }
