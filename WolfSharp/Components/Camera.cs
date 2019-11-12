@@ -71,8 +71,7 @@ namespace WolfSharp.Components
 		private void UpdateProjection()
 		{
 			Projection = Matrix4x4.CreatePerspectiveFieldOfView(
-				//(float)Math.PI * FieldOfView / 180.0f,
-				1.0f,
+				(float)Math.PI * FieldOfView / 180.0f,
 				AspectRatio,
 				ClipMin,
 				ClipMax);
