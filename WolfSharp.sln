@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolfSharp", "WolfSharp\Wolf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{1DD846B0-A521-41B7-9A00-4BBD729F123E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "Editor\Editor.csproj", "{F7C5ADAD-8517-46BC-AB13-6F2575BF76DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{1DD846B0-A521-41B7-9A00-4BBD729F123E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DD846B0-A521-41B7-9A00-4BBD729F123E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DD846B0-A521-41B7-9A00-4BBD729F123E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7C5ADAD-8517-46BC-AB13-6F2575BF76DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7C5ADAD-8517-46BC-AB13-6F2575BF76DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7C5ADAD-8517-46BC-AB13-6F2575BF76DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7C5ADAD-8517-46BC-AB13-6F2575BF76DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

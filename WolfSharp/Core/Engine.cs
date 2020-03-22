@@ -20,7 +20,7 @@ namespace WolfSharp.Core
 		
 		private Sdl2Window _window;
 
-		private RenderObject _renderObject;
+		private MeshRenderObject _meshRenderObject;
 
 		private long _currentFrameTime;
 		private long _previousFrameTime;
@@ -44,12 +44,13 @@ namespace WolfSharp.Core
 				_currentFrameTime = stopwatch.ElapsedTicks;
 				DeltaTime = (float)(_currentFrameTime - _previousFrameTime) / Stopwatch.Frequency;
 
-				_window.PumpEvents();
-				//TODO: Update input
+				var snapshot = _window.PumpEvents();
+				Input.Update(snapshot, _window);
 				//TODO: Handle resize events
 				//TODO: Handle quit events
 
 				Scene?.Update();
+				Scene?.PreDraw();
 				Renderer.Draw();
 				Scene?.LateUpdate();
 
@@ -61,6 +62,7 @@ namespace WolfSharp.Core
 				}
 			}
 			
+			Scene?.Destroy();
 			Renderer.Exit();
 		}
 
@@ -92,7 +94,7 @@ namespace WolfSharp.Core
 
 			var modelMatrix = Matrix4x4.Identity;
 
-			_renderObject.MVP = modelMatrix * viewMatrix * projectionMatrix;
+			_meshRenderObject.MVP = modelMatrix * viewMatrix * projectionMatrix;
 			
 			Renderer.Draw();
 		}

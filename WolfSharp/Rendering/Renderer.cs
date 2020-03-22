@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
 using Veldrid.Utilities;
-using WolfSharp.Core;
 
 namespace WolfSharp.Rendering
 {
@@ -14,6 +15,8 @@ namespace WolfSharp.Rendering
 		public static DisposeCollectorResourceFactory ResourceFactory { get; private set; }
 
 		private static CommandList _commandList;
+		private static Dictionary<RenderPass, List<RenderObject>> _renderPasses;
+		private static IEnumerable<RenderPass> _allPasses; // List of all RenderPasses in the RenderPass enum
 
 		public static void Initialize(Sdl2Window window)
 		{
@@ -31,8 +34,25 @@ namespace WolfSharp.Rendering
 			GraphicsDevice = VeldridStartup.CreateGraphicsDevice(window, options);
 			ResourceFactory = new DisposeCollectorResourceFactory(GraphicsDevice.ResourceFactory);
 			_commandList = ResourceFactory.CreateCommandList();
+			
+			_renderPasses = new Dictionary<RenderPass, List<RenderObject>>();
+			_allPasses = Enum.GetValues(typeof(RenderPass)).Cast<RenderPass>();
+			foreach (var pass in _allPasses)
+			{
+				_renderPasses.Add(pass, new List<RenderObject>());
+			}
 
 			Console.WriteLine($"Initialized Veldrid with {GraphicsDevice.BackendType} backend");
+		}
+
+		public static void AddRenderObject(RenderObject renderObject, RenderPass renderPass)
+		{
+			_renderPasses[renderPass].Add(renderObject);
+		}
+
+		public static void RemoveRenderObject(RenderObject renderObject, RenderPass renderPass)
+		{
+			_renderPasses[renderPass].Remove(renderObject);
 		}
 
 		public static void Draw()
@@ -41,9 +61,17 @@ namespace WolfSharp.Rendering
 			_commandList.SetFramebuffer(GraphicsDevice.SwapchainFramebuffer);
 			_commandList.ClearColorTarget(0, RgbaFloat.CornflowerBlue);
 			_commandList.ClearDepthStencil(1);
-
-			Scene.ActiveScene.Draw(_commandList);
 			
+			foreach (var pass in _allPasses)
+			{
+				_commandList.PushDebugGroup(pass.ToString());
+				foreach (var renderObject in _renderPasses[pass])
+				{
+					renderObject.Draw(_commandList);
+				}
+				_commandList.PopDebugGroup();
+			}
+
 			_commandList.End();
 			GraphicsDevice.SubmitCommands(_commandList);
 			GraphicsDevice.SwapBuffers();

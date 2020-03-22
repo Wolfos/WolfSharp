@@ -16,9 +16,9 @@ namespace WolfSharp.Core
 		/// </summary>
 		public virtual void Update() { }
 		/// <summary>
-		/// Called once every frame, intended for rendering
+		/// Called once every frame, just before drawing but after Update
 		/// </summary>
-		public virtual void Draw(dynamic commandList) { }
+		public virtual void PreDraw() { }
 		/// <summary>
 		/// Called once every frame, after drawing
 		/// </summary>
@@ -27,6 +27,6 @@ namespace WolfSharp.Core
 		/// Called when the GameObject was destroyed, or the Component removed
 		/// TODO: Implement
 		/// </summary>
-		public virtual void Destroyed() { }
+		public virtual void Destroy() { }
 	}
 }

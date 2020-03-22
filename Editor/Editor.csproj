@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WolfSharp\WolfSharp.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Veldrid.ImGui" Version="5.72.0" />
+    </ItemGroup>
+
+</Project>

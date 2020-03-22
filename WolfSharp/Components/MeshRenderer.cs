@@ -7,7 +7,7 @@ namespace WolfSharp.Components
 {
 	public class MeshRenderer : Component
 	{
-		private RenderObject _renderObject;
+		private MeshRenderObject _renderObject;
 
 		public Mesh Mesh {
 			get => _renderObject.Mesh;
@@ -36,13 +36,19 @@ namespace WolfSharp.Components
 
 		public override void Added()
 		{
-			_renderObject = new RenderObject();
+			_renderObject = new MeshRenderObject();
+
+			Renderer.AddRenderObject(_renderObject, RenderPass.Main);
 		}
 
-		public override void Draw(dynamic commandList)
+		public override void PreDraw()
 		{
 			_renderObject.MVP = Transform.Matrix * Camera.Instance.View * Camera.Instance.Projection;
-			_renderObject.Draw(commandList);
+		}
+
+		public override void Destroy()
+		{
+			Renderer.RemoveRenderObject(_renderObject, RenderPass.Main);
 		}
 	}
 }
